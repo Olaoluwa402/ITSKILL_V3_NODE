@@ -1,6 +1,7 @@
 import express from "express";
 import colors from "colors";
 import morgan from "morgan";
+import db from "./config/db.js";
 //initiate express app
 const app = express();
 
@@ -91,10 +92,16 @@ app.get("*", (req, res) => {
   });
 });
 const port = process.env.NODE_ENV === "production" ? process.env.PORT : 8000;
-app.listen(port, (err) => {
-  if (err) {
-    console.log(`Error: ${err.message}`.bgMagenta);
-    return;
-  }
-  console.log(`Server running on port ${port}`.bgGreen);
-});
+
+//start db
+db()
+  .then((res) => {
+    app.listen(port, (err) => {
+      if (err) {
+        console.log(`Error: ${err.message}`.bgMagenta);
+        return;
+      }
+      console.log(`Server running on port ${port}`.bgGreen);
+    });
+  })
+  .catch((err) => console.log("Error", err));
