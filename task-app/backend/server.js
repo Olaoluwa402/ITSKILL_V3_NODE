@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+//load evironment variables
+dotenv.config();
+
 import express from "express";
 import colors from "colors";
 import morgan from "morgan";
@@ -9,7 +13,7 @@ const app = express();
 
 //general middlewares
 app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 //@login: '/api/v1/login' login user
@@ -49,13 +53,22 @@ app.post("/api/v1/register", async (req, res) => {
       repeat_password: repeat_password,
     });
 
-    console.log(value);
+    const userExist = await User.findOne({ email: email });
+    console.log(userExist, "exist");
+
+    //check if user exists
+    if (userExist) {
+      throw new Error("User with the email already registered");
+    }
 
     const user = await User.create({
       name,
       email,
       password,
     });
+
+    //sed a message to the user
+
     res.status(200).json({
       status: "success",
       user: {
