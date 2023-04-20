@@ -8,6 +8,8 @@ import morgan from "morgan";
 import db from "./config/db.js";
 import User from "./models/User.js";
 import Joi from "joi";
+import { generateToken } from "./utils/jwt.js";
+import { isVerified } from "./middlewares/auth.js";
 //initiate express app
 const app = express();
 
@@ -19,11 +21,32 @@ app.use(express.json());
 //@login: '/api/v1/login' login user
 //@ethod: POST
 //@access: Public
-app.post("/api/v1/login", (req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "login",
-  });
+app.post("/api/v1/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    //find the user with the email
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    console.log(await user.matchPassword(password));
+    const isPasswordMatched = await user.matchPassword(password);
+    if (!isPasswordMatched) {
+      throw new Error("Credential not correct");
+    }
+    //verify the supplied password against the database password
+    res.status(200).json({
+      status: "success",
+      message: "login",
+      access_token: generateToken(user._id),
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      error: err.message,
+    });
+  }
 });
 
 //@register: '/api/v1/register' register user
@@ -69,13 +92,14 @@ app.post("/api/v1/register", async (req, res) => {
 
     //sed a message to the user
 
-    res.status(200).json({
+    res.status(201).json({
       status: "success",
       user: {
         id: user._id,
         email: user.email,
         name: user.name,
       },
+      access_token: generateToken(user._id),
     });
   } catch (err) {
     console.log(err);
@@ -88,7 +112,8 @@ app.post("/api/v1/register", async (req, res) => {
 //@tasks:  '/api/v1/tasks' : gets all tasks
 //@method: GET
 //@access: Public
-app.get("/api/v1/tasks", (req, res) => {
+app.get("/api/v1/tasks", isVerified, (req, res) => {
+  console.log(req.user, "fro Tasks");
   res.status(200).json({
     status: "success",
     message: "All tasks",
