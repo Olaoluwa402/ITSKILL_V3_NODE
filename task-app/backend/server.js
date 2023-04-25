@@ -9,7 +9,7 @@ import db from "./config/db.js";
 import User from "./models/User.js";
 import Joi from "joi";
 import { generateToken } from "./utils/jwt.js";
-import { isVerified } from "./middlewares/auth.js";
+import { isVerified, authorized } from "./middlewares/auth.js";
 //initiate express app
 const app = express();
 
@@ -90,6 +90,16 @@ app.post("/api/v1/register", async (req, res) => {
       password,
     });
 
+    //send otp to mail - otpGenerator npm - strictly 6digit numbers
+    //transactional mail services - check out mailGun and sendGrid
+    // await axios.post()
+    //create another endpoint to verify otp
+    /* -verify endpoint 
+        fint the otp =>const user = await  User.findOne({token:otp})
+        update the user record, set the isVerified to true => user.isVerified = true ; user.save()
+        send back the user detail and access_token
+     */
+
     //sed a message to the user
 
     res.status(201).json({
@@ -112,7 +122,7 @@ app.post("/api/v1/register", async (req, res) => {
 //@tasks:  '/api/v1/tasks' : gets all tasks
 //@method: GET
 //@access: Public
-app.get("/api/v1/tasks", isVerified, (req, res) => {
+app.get("/api/v1/tasks", isVerified, authorized(["user"]), (req, res) => {
   console.log(req.user, "fro Tasks");
   res.status(200).json({
     status: "success",

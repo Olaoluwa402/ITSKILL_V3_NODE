@@ -7,6 +7,8 @@ const userSchema = new Schema({
   email: { type: String, required: [true, "Email is required"], unique: true },
   name: { type: String, required: [true, "Name is required"] },
   isVerified: { type: Boolean, default: false },
+  token: { type: String, default: null },
+  role: { type: String, enum: ["admin", "user"], default: "user" },
   password: { type: String, required: [true, "password is required"] },
 });
 

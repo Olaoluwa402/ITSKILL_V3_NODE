@@ -30,4 +30,18 @@ const isVerified = async (req, res, next) => {
   }
 };
 
-export { isVerified };
+//authorization
+const authorized = (roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      res.status(403).json({
+        status: "failed",
+        message: `User with ${req.user.role} role is not permitted to access this resource`,
+      });
+      return;
+    }
+    next();
+  };
+};
+
+export { isVerified, authorized };
