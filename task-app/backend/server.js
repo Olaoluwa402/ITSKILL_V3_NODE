@@ -9,6 +9,8 @@ import db from "./config/db.js";
 
 import AuthRoute from "./routes/Auth.js";
 import TaskRoute from "./routes/Task.js";
+import UserRoute from "./routes/User.js";
+import AdminRoute from "./routes/Admin.js";
 //initiate express app
 const app = express();
 
@@ -20,6 +22,8 @@ app.use(express.json());
 //routes
 app.use("/api/v1/auth", AuthRoute);
 app.use("/api/v1/tasks", TaskRoute);
+app.use("/api/v1/users", UserRoute);
+app.use("/api/v1/admin", AdminRoute);
 
 app.get("*", (req, res) => {
   res.status(404).json({
