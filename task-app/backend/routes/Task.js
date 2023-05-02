@@ -10,7 +10,7 @@ import {
 import { isVerified, authorized } from "../middlewares/auth.js";
 
 //get all tasks
-router.route("/").get(getTasks).post(createTask);
+router.route("/").get(isVerified, getTasks).post(isVerified, createTask);
 //get single task
 router.route("/:id").get(getSingleTask);
 //update task

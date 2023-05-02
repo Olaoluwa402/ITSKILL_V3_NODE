@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const { Schema, Model, O } = mongoose;
+const { Schema } = mongoose;
 
 //Task schema
 const taskSchema = Schema({
@@ -7,11 +7,11 @@ const taskSchema = Schema({
   desc: { type: String, required: [true, "Desc is required"] },
   imgUrl: { type: String, required: [true, "imgUrl is required"] },
   user: {
-    type: Schema.Types.ObjectId(),
-    ref: User,
+    type: Schema.Types.ObjectId,
+    ref: "User",
   },
 });
 
-const Task = Model("Task", taskSchema);
+const Task = mongoose.model("Task", taskSchema);
 
 export default Task;

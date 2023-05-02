@@ -1,4 +1,9 @@
 export const serializeUser = (user) => {
-  const { password, ...rest } = user; //filter and return only desired fields
-  return rest;
+  const { email, name, role, ...rest } = user; //filter and return only desired fields
+  console.log(rest);
+  return {
+    email: email,
+    name: name,
+    role,
+  };
 };

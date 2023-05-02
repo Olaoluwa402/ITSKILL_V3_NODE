@@ -4,7 +4,7 @@ import { serializeUser } from "../utils/serialize.js";
 //@tasks:  '/api/v1/users/profile' : get profile
 //@method: GET
 //@access: private
-const getProfile = async () => {
+const getProfile = async (req, res) => {
   try {
     const profile = await User.findById(req.user._id);
     if (!profile) {
@@ -26,7 +26,7 @@ const getProfile = async () => {
 //@tasks:  '/api/v1/users/update-profile' : update profile
 //@method: GET
 //@access: private
-const updateProfile = async () => {
+const updateProfile = async (req, res) => {
   const { name } = req.body;
   try {
     //get user to be uopdated

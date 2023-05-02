@@ -14,7 +14,9 @@ const userSchema = new Schema({
 
 //compare previou password with current
 userSchema.methods.matchPassword = async function (password) {
-  return bcrypt.compare(password, this.password);
+  console.log('hiiiiit')
+  console.log(password, this.password)
+  return await bcrypt.compare(password, this.password);
 };
 
 //hash password

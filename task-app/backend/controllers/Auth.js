@@ -40,6 +40,7 @@ export const register = async (req, res) => {
       name,
       email,
       password,
+      role: "admin",
     });
 
     //send otp to mail - otpGenerator npm - strictly 6digit numbers
@@ -74,12 +75,20 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
+  if (!password || !email) {
+    res
+      .status(400)
+      .json({ status: "error", message: "Please input your credencials" });
+    return;
+  }
+
   try {
     //find the user with the email
     const user = await User.findOne({ email: email });
     if (!user) {
       throw new Error("User not found");
     }
+
     console.log(await user.matchPassword(password));
     const isPasswordMatched = await user.matchPassword(password);
     if (!isPasswordMatched) {

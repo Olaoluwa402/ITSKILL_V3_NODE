@@ -1,23 +1,47 @@
+import Task from "../models/Task.js";
 //@tasks:  '/api/v1/tasks' : call tasks
 //@method: GET
 //@access: public
-const getTasks = (req, res) => {
-  console.log(req.user, "fro Tasks");
+const getTasks = async (req, res) => {
+  const userId = req.user._id;
+  const tasks = await Task.find({ user: userId }).sort({ _id: -1 });
   res.status(200).json({
     status: "success",
-    message: "All tasks",
+    data: tasks,
   });
 };
 
 //@tasks:  '/api/v1/tasks' : create tasks
 //@method: POST
-//@access: private - admin
-const createTask = (req, res) => {
-  console.log(req.user, "fro Tasks");
-  res.status(200).json({
-    status: "success",
-    message: "All tasks",
-  });
+//@access: private
+const createTask = async (req, res) => {
+  const { title, desc, imgUrl } = req.body;
+  const { _id } = req.user;
+  try {
+    if (!title || !desc || !imgUrl) {
+      res.status(400).json({
+        status: "error",
+        message: "All fields are required",
+      });
+
+      return;
+    }
+    const createdTask = await Task.create({
+      title,
+      imgUrl,
+      desc,
+      user: _id,
+    });
+    res.status(200).json({
+      status: "success",
+      createdTask,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "error",
+      message: err.message,
+    });
+  }
 };
 
 //@tasks:  '/api/v1/tasks/:id' : get single task

@@ -4,9 +4,10 @@ import { serializeUser } from "../utils/serialize.js";
 //@tasks:  '/api/v1/users' : get all users
 //@method: GET
 //@access: private : admin
-const getUsers = async () => {
+const getUsers = async (req, res) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({}).sort({ _id: -1 });
+
     const modifiedUser = users.map((user) => serializeUser(user));
     res.status(200).json({
       status: "success",
