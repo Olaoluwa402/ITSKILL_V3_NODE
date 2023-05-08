@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import path from "path";
 //load evironment variables
 dotenv.config();
 
@@ -13,6 +14,7 @@ import UserRoute from "./routes/User.js";
 import AdminRoute from "./routes/Admin.js";
 //initiate express app
 const app = express();
+const __dirname = path.resolve();
 
 //general middlewares
 app.use(morgan("dev"));
@@ -24,6 +26,20 @@ app.use("/api/v1/auth", AuthRoute);
 app.use("/api/v1/tasks", TaskRoute);
 app.use("/api/v1/users", UserRoute);
 app.use("/api/v1/admin", AdminRoute);
+
+// console.log(path.join(__dirname, "frontend/build"), "path");
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "frontend/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.send("Welcome to Task API");
+  });
+}
 
 app.get("*", (req, res) => {
   res.status(404).json({

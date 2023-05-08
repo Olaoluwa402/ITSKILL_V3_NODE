@@ -1,7 +1,7 @@
 import Task from "../models/Task.js";
 //@tasks:  '/api/v1/tasks' : call tasks
 //@method: GET
-//@access: public
+//@access: private
 const getTasks = async (req, res) => {
   const userId = req.user._id;
   const tasks = await Task.find({ user: userId }).sort({ _id: -1 });
@@ -48,32 +48,77 @@ const createTask = async (req, res) => {
 //@method: GET
 //@access: public
 
-const getSingleTask = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "single task",
-  });
+const getSingleTask = async (req, res) => {
+  try {
+    // const {page, limit} = req.query // /tasks?page=2&limit=10
+    const { id } = req.params; // /tasks/:id
+    const task = await Task.findById(id);
+    if (!task) {
+      throw new Error("Not found");
+    }
+    res.status(200).json({
+      status: "success",
+      task,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "error",
+      message: err.message,
+    });
+  }
 };
 
 //@tasks:  '/api/v1/tasks/:id' : update task
 //@method: PUT /PATCH
 //@access: private : admin
 
-const updateTask = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "task updated",
-  });
+const updateTask = async (req, res) => {
+  const { title, imgUrl, desc } = req.body;
+
+  try {
+    const { id } = req.params; // /tasks/:id
+    const task = await Task.findById(id);
+    if (!task) {
+      throw new Error("Not found");
+    }
+    //alternative is findAndUpdate()
+    //update record
+    task.title = title ? title : task.title;
+    task.dec = desc ? desc : task.decs;
+    task.imgUrl = imgUrl ? imgUrl : task.imgUrl;
+
+    //save the changes
+    task.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Task updated",
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "error",
+      message: err.message,
+    });
+  }
 };
 
-//@tasks:  '/api/v1/tasks' : deleye tasks
-//@method: PUT
+//@tasks:  '/api/v1/tasks' : delete tasks
+//@method: DELETE
 //@access: private - admin
-const deleteTask = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "task deleted",
-  });
+const deleteTask = async (req, res) => {
+  try {
+    const { id } = req.params; // /tasks/:id
+    await Task.deleteOne(id);
+    res.status(200).json({
+      status: "success",
+      message: "Task deleted",
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "error",
+      message: err.message,
+    });
+  }
 };
 
 export { getTasks, updateTask, createTask, getSingleTask, deleteTask };
