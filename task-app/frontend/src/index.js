@@ -4,14 +4,20 @@ import "./index.css";
 import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "./context";
+import { Provider as ReduxProvider } from "react-redux";
+import { store } from "./redux/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <Router>
-    {/* provide context value to components throught the provider */}
-    <Provider>
-      <App />
-    </Provider>
+    {/* <ReduxProvider store={store}> */}
+    <ReduxProvider store={store}>
+      <Provider>
+        <App />
+      </Provider>
+    </ReduxProvider>
+
+    {/* </ReduxProvider> */}
   </Router>
 );

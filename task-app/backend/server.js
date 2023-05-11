@@ -12,6 +12,7 @@ import AuthRoute from "./routes/Auth.js";
 import TaskRoute from "./routes/Task.js";
 import UserRoute from "./routes/User.js";
 import AdminRoute from "./routes/Admin.js";
+import cors from "cors";
 //initiate express app
 const app = express();
 const __dirname = path.resolve();
@@ -20,6 +21,7 @@ const __dirname = path.resolve();
 app.use(morgan("dev"));
 // app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
 
 //routes
 app.use("/api/v1/auth", AuthRoute);

@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import Joi from "joi";
 import { generateToken } from "../utils/jwt.js";
+import { serializeUser } from "../utils/serialize.js";
 //@register: '/api/v1/register' register user
 //@ethod: POST
 //@access: Public
@@ -97,7 +98,7 @@ export const login = async (req, res) => {
     //verify the supplied password against the database password
     res.status(200).json({
       status: "success",
-      message: "login",
+      user: serializeUser(user),
       access_token: generateToken(user._id),
     });
   } catch (err) {

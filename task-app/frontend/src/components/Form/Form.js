@@ -1,21 +1,29 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Input from "./Input/Input";
 import Spinner from "../Spinner/Spinner";
 import { toast } from "react-toastify";
 import "./Form.css";
+import { loginAction } from "../../redux/actions/authActions";
 
 const Form = () => {
+  const dispatch = useDispatch();
   const inputRef = useRef(null);
-  const [loading, setLoading] = useState(false);
-  const [username, setUserName] = useState("");
+
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { loading, error, success } = useSelector((store) => store.login);
 
   useEffect(() => {
     inputRef.current.focus();
-  }, []);
+    if (success) {
+      toast.success("You are now logged in");
+    }
+  }, [success]);
 
-  function userNameHandler(e) {
-    setUserName(e.target.value);
+  function emailHandler(e) {
+    setEmail(e.target.value);
   }
 
   function passwordHandler(e) {
@@ -23,19 +31,14 @@ const Form = () => {
   }
 
   function submitHandler(e) {
-    //set loadig to true
-    setLoading(true);
-
-    setTimeout(() => {
-      // clear input field
-      setUserName("");
-      setPassword("");
-      setLoading(false);
-    }, 4000);
-
-    toast.success("Successfull");
-
-    console.log({ username, password });
+    if (!email || !password) {
+      toast.warn("All fields are required");
+      return;
+    }
+    dispatch(loginAction({ email, password }));
+    // clear input field
+    setEmail("");
+    setPassword("");
   }
 
   return (
@@ -45,10 +48,10 @@ const Form = () => {
           <label htmlFor="username">User Name</label>
           <Input
             inputProps={{
-              type: "text",
-              placeholder: "username",
-              value: username,
-              onChange: userNameHandler,
+              type: "email",
+              placeholder: "email",
+              value: email,
+              onChange: emailHandler,
               ref: inputRef,
             }}
           />
@@ -66,6 +69,7 @@ const Form = () => {
           />
         </div>
 
+        {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
         {loading ? (
           <Spinner />
         ) : (

@@ -14,10 +14,10 @@ import Form from "../components/Form/Form";
 const Home = () => {
   return (
     <>
-      <CounterOne />
+      {/* <CounterOne />
       <DocTitleOne />
       <UseRefTimer />
-      <UseRef />
+      <UseRef /> */}
       <Form />
     </>
   );
