@@ -21,7 +21,7 @@ const loginAction = ({ email, password }) => {
         },
       };
       const { data } = await axios.post(
-        `${BASE_API_URL}/api/v1/auth/login`,
+        `/api/v1/auth/login`,
         { email, password },
         config
       );
