@@ -13,12 +13,12 @@ const Form = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { loading, error, success } = useSelector((store) => store.login);
+  const { loading, error, success, user } = useSelector((store) => store.login);
 
   useEffect(() => {
     inputRef.current.focus();
     if (success) {
-      toast.success("You are now logged in");
+      toast.success(`You are welcome ${user.name}`);
     }
   }, [success]);
 

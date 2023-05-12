@@ -58,11 +58,7 @@ export const register = async (req, res) => {
 
     res.status(201).json({
       status: "success",
-      user: {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-      },
+      user: serializeUser(user),
       access_token: generateToken(user._id),
     });
   } catch (err) {
