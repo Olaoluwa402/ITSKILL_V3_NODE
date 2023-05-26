@@ -8,7 +8,7 @@ import {
 } from "../constants/authConstants";
 import axios from "axios";
 
-import { BASE_API_URL } from "../../config";
+// import { BASE_API_URL } from "../../config";
 const loginAction = ({ email, password }) => {
   return async (dispatch) => {
     try {
@@ -48,6 +48,16 @@ const loginAction = ({ email, password }) => {
             : error.message,
       });
     }
+  };
+};
+
+export const logout = () => {
+  return (dispatch) => {
+    //remove the stored user
+    localStorage.removeItem("user");
+    dispatch({
+      type: "LOGOUT",
+    });
   };
 };
 

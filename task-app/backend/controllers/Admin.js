@@ -9,7 +9,7 @@ const getUsers = async (req, res) => {
     const users = await User.find({}).sort({ _id: -1 });
 
     const modifiedUser = users.map((user) => serializeUser(user));
-    res.status(200).json({
+    res.status(200).json({ 
       status: "success",
       data: modifiedUser,
     });

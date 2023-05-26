@@ -41,6 +41,13 @@ const loginReducer = (
       };
     case LOGIN_USER_RESET:
       return {};
+    case "LOGOUT":
+      return {
+        loading: false,
+        error: "",
+        user: null,
+        access_token: null,
+      };
     case LOGIN_USER_FAILED:
       return {
         loading: false,
